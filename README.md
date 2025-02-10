@@ -1,50 +1,17 @@
-# React + TypeScript + Vite
+# Superchain Starter Kit
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight, focused starting point for prototyping/building on the Superchain, featuring
 
-Currently, two official plugins are available:
+- 🛠 foundry, supersim, super-cli
+- 🎨 vite, tailwind-css, shadcn/ui, wagmi, viem
+- 💡 examples - Ping Pong, SuperchainERC20
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🛠 Looking for a starter-kit without a frontend? Check out
 
-## Expanding the ESLint configuration
+## 🚀 Getting started (< 30s)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## ⚖️ License
 
-- Configure the top-level `parserOptions` property like this:
+Files are licensed under the [MIT license](./LICENSE).
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react';
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-});
-```
+<a href="./LICENSE"><img src="https://user-images.githubusercontent.com/35039927/231030761-66f5ce58-a4e9-4695-b1fe-255b1bceac92.png" alt="License information" width="200" /></a>
