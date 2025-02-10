@@ -6,4 +6,8 @@ script = "contracts/script"
 cache_path = "contracts/cache"
 libs = ["contracts/lib"]
 
+remappings = [
+  "@interop-lib/=lib/interop-lib/src/"
+]
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
