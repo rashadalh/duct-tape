@@ -14,7 +14,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "vite preview",
-    "shadcn:add": "pnpm dlx shadcn@canary add"
+    "shadcn:add": "pnpm dlx shadcn@canary add",
+    "supersim:start": "pnpm supersim --interop.autorelay --logs.directory supersim-logs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.2",
