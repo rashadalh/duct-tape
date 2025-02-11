@@ -10,7 +10,7 @@ procs:
     shell: pnpm wait-port  http://:8420/ready && tail -f anvil-902.log
   frontend:
     cwd: .
-    shell: pnpm dev
+    shell: pnpm dev:frontend
   deploy-contracts:
     cwd: .
     shell: pnpm build:contracts
