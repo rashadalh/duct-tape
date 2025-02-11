@@ -4,6 +4,7 @@ out = "contracts/out"
 test = "contracts/test"
 script = "contracts/script"
 cache_path = "contracts/cache"
+broadcast = "contracts/broadcast"
 libs = ["contracts/lib"]
 
 remappings = [
