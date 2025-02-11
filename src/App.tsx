@@ -1,9 +1,21 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import viteLogo from '/vite.svg';
 import { Button } from '@/components/ui/button';
+import { pingPongAbi } from '@/abi/pingPongAbi';
+import { useReadContract } from 'wagmi';
+import { pingPongContractAddress } from '@/constants';
+import { PingPongLogWithChainId, usePingPongLogs } from '@/indexer/usePingPongLogs';
 
 function App() {
   const [count, setCount] = useState(0);
+
+  const logs = usePingPongLogs();
+
+  const { data: ball } = useReadContract({
+    address: pingPongContractAddress,
+    abi: pingPongAbi,
+    functionName: 'ball',
+  });
 
   return (
     <>
@@ -22,4 +34,27 @@ function App() {
   );
 }
 
+const SentLog = ({ log }: { log: Extract<PingPongLogWithChainId, { eventName: 'BallSent' }> }) => {
+  return <div>{log.chainId}</div>;
+};
+
+const ReceivedLog = ({
+  log,
+}: {
+  log: Extract<PingPongLogWithChainId, { eventName: 'BallReceived' }>;
+}) => {
+  return <div>{log.chainId}</div>;
+};
+
+const Logs = () => {
+  const logs = usePingPongLogs();
+
+  return (
+    <div>
+      {logs.map(log => (
+        <div key={log.chainId}>{log.eventName}</div>
+      ))}
+    </div>
+  );
+};
 export default App;
