@@ -1,7 +1,7 @@
 procs:
   supersim:
     cwd: .
-    shell: pnpm supersim:start
+    shell: pnpm dev:supersim
   supersim-chain-901:
     cwd: supersim-logs
     shell: pnpm wait-port http://:8420/ready && tail -f anvil-901.log
