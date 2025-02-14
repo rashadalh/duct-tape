@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "mprocs",
     "dev:frontend": "vite",
+    "dev:supersim": "pnpm supersim --interop.autorelay --logs.directory supersim-logs",
     "build:frontend": "vite build",
     "build:contracts": "forge compile",
     "deploy:sup:supersim": "forge build && pnpm sup deploy create2 --chains supersiml2a,supersiml2b --salt ethers phoenix --forge-artifact-path /Users/james/oplabs/superchain-starter/contracts/out/PingPong.sol/PingPong.json --constructor-args 901 --network supersim --private-key 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a",
@@ -15,8 +16,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "vite preview",
-    "shadcn:add": "pnpm dlx shadcn@canary add",
-    "supersim:start": "pnpm supersim --interop.autorelay --logs.directory supersim-logs"
+    "shadcn:add": "pnpm dlx shadcn@canary add"
   },
   "dependencies": {
     "@eth-optimism/viem": "^0.3.1",

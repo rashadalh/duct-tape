@@ -3,10 +3,15 @@ import { pingPongContractAddress } from '@/constants';
 import { useState } from 'react';
 import { useWatchContractEvent } from 'wagmi';
 import { Log } from 'viem';
-import { ExtractAbiEvent, ExtractAbiEvents } from 'abitype';
+import { ExtractAbiEvent } from 'abitype';
 import { supersimL2A, supersimL2B } from '@eth-optimism/viem/chains';
 
-type PingPongLog = Log<bigint, number, false, ExtractAbiEvents<typeof pingPongAbi>>;
+type PingPongBallSentLog = Log<
+  bigint,
+  number,
+  false,
+  ExtractAbiEvent<typeof pingPongAbi, 'BallSent'>
+>;
 
 type PingPongBallReceivedLog = Log<
   bigint,
@@ -15,7 +20,7 @@ type PingPongBallReceivedLog = Log<
   ExtractAbiEvent<typeof pingPongAbi, 'BallReceived'>
 >;
 
-export type PingPongLogWithChainId = PingPongLog & {
+export type PingPongLogWithChainId = (PingPongBallReceivedLog | PingPongBallSentLog) & {
   chainId: number;
 };
 
@@ -25,6 +30,7 @@ export const usePingPongLogs = () => {
   usePingPongLogsForChain({
     chainId: supersimL2A.id,
     onLogs: logs => {
+      console.log('logs', logs);
       setLogs(prev => [...prev, ...logs]);
     },
   });
@@ -32,6 +38,7 @@ export const usePingPongLogs = () => {
   usePingPongLogsForChain({
     chainId: supersimL2B.id,
     onLogs: logs => {
+      console.log('logs', logs);
       setLogs(prev => [...prev, ...logs]);
     },
   });
@@ -54,6 +61,7 @@ const usePingPongLogsForChain = ({
     onLogs: logs => {
       onLogs(logs.map(log => ({ ...log, chainId })));
     },
+    pollingInterval: 500,
   });
 
   useWatchContractEvent({
@@ -64,5 +72,6 @@ const usePingPongLogsForChain = ({
     onLogs: logs => {
       onLogs(logs.map(log => ({ ...log, chainId })));
     },
+    pollingInterval: 500,
   });
 };
