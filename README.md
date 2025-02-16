@@ -9,33 +9,37 @@ A lightweight, focused starting point for prototyping/building on the Superchain
 🛠 Looking for a starter-kit without a frontend? Check out
 
 ## 🚀 Getting started
-1. Clone this repo
+1. Clone this repo and give it a new name
 ```bash
-git clone https://github.com/ethereum-optimism/superchain-starter.git
+git clone --depth 1 https://github.com/ethereum-optimism/superchain-starter.git <your-new-project-name>
 ```
 2. cd into the repo
 ```bash
-cd superchain-starter
-```
-3. Give `scripts/create-project.sh` permissions to execute
-```bash
-chmod +x scripts/create-project.sh
-```
-4. Run `scripts/create-project.sh` and provide a project name
-```bash
-./scripts/create-project.sh <your-new-project-name>
-```
-5. cd into your new project
-```bash
 cd <your-new-project-name>
 ```
-6. Create a new empty git repo through github
+3. Remove the existing .git
+```bash
+rm -rf .git
+```
+4. init a new git repo
+```bash
+git init
+```
+5. add the new files to the repo
+```bash
+git add .
+```
+6. commit the new files
+```bash
+git commit -m "Initial set up"
+```
+7. Create a new empty git repo through github
 
-7. add your empty git repo as a remote
+8. add your empty git repo as a remote
 ```bash
 git remote add origin <your-empty-git-repo-url>
 ```
-8. push your local repo to the remote
+9. push your local repo to the remote
 ```bash
 git push -u origin main
 ```
