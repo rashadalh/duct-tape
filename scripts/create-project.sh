@@ -5,8 +5,8 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-git clone --depth 1 https://github.com/ethereum-optimism/superchain-starter.git $1
-cd $1
+git clone --depth 1 https://github.com/ethereum-optimism/superchain-starter.git "../$1"
+cd "../$1"
 rm -rf .git
 git init
 git add .
