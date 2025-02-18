@@ -9,40 +9,35 @@ A lightweight, focused starting point for prototyping/building on the Superchain
 🛠 Looking for a starter-kit without a frontend? Check out
 
 ## 🚀 Getting started
-1. Clone this repo and give it a new name
-```bash
-git clone --depth 1 https://github.com/ethereum-optimism/superchain-starter.git <your-new-project-name>
-```
-2. cd into the repo
-```bash
-cd <your-new-project-name>
-```
-3. Remove the existing .git
-```bash
-rm -rf .git
-```
-4. init a new git repo
-```bash
-git init
-```
-5. add the new files to the repo
-```bash
-git add .
-```
-6. commit the new files
-```bash
-git commit -m "Initial set up"
-```
-7. Create a new empty git repo through github
 
-8. add your empty git repo as a remote
+### 1. Create a new repository using this template:
+
+Click the "Use this template" button above on GitHub, or [generate directly](https://github.com/new?template_name=superchain-starter&template_owner=ethereum-optimism)
+
+### 2. Clone your new repository
+
 ```bash
-git remote add origin <your-empty-git-repo-url>
+git clone <your-new-repository-url>
+cd superchain-starter
 ```
-9. push your local repo to the remote
+
+### 3. Install dependencies
+
 ```bash
-git push -u origin main
+pnpm i
 ```
+
+### 4. Get started
+
+```bash
+pnpm dev
+```
+
+This command will:
+
+- Start a local Superchain network using [supersim](https://github.com/ethereum-optimism/supersim)
+- Launch the frontend development server
+- Deploy the smart contracts to your local network
 
 Start building on the Superchain!
 
