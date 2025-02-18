@@ -49,7 +49,7 @@ const CONFIG = {
 // ============================================================================
 
 const CounterIncrementer = () => {
-  const { data, writeContract, isPending } = useWriteContract({});
+  const { data, writeContract, isPending } = useWriteContract();
   const { isLoading: isWaitingForReceipt } = useWaitForTransactionReceipt({
     hash: data,
     chainId: CONFIG.sourceChain.id,
@@ -115,7 +115,7 @@ const CounterIncrementer = () => {
 };
 
 const DirectMessengerCall = () => {
-  const { writeContract, isPending, data } = useWriteContract({});
+  const { writeContract, isPending, data } = useWriteContract();
   const { isLoading: isWaitingForReceipt } = useWaitForTransactionReceipt({
     hash: data,
     chainId: CONFIG.sourceChain.id,
