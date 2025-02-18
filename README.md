@@ -4,45 +4,6 @@
 
 Example Superchain app (contract + frontend) that uses interop to send ETH to multiple recipients on a different chain.
 
-## 🚀 Getting started
-
-Get prototyping Superchain apps in under < 1 min! ❤️‍🔥
-
-### Prerequisites: Foundry & Node
-
-Follow [this guide](https://book.getfoundry.sh/getting-started/installation) to install Foundry
-
-### 1. Create a new repository using this template:
-
-Click the "Use this template" button above on GitHub, or [generate directly](https://github.com/new?template_name=superchain-starter&template_owner=ethereum-optimism)
-
-### 2. Clone your new repository
-
-```bash
-git clone <your-new-repository-url>
-cd superchain-starter-multisend
-```
-
-### 3. Install dependencies
-
-```bash
-pnpm i
-```
-
-### 4. Get started
-
-```bash
-pnpm dev
-```
-
-This command will:
-
-- Start a local Superchain network (1 L1 chain and 2 L2 chains) using [supersim](https://github.com/ethereum-optimism/supersim)
-- Launch the frontend development server at (http://localhost:5173)
-- Deploy the smart contracts to your local network
-
-Start building on the Superchain!
-
 ## 🔗 Contracts
 
 ### [CrossChainMultisend.sol](./contracts/src/CrossChainMultisend.sol)
@@ -158,6 +119,43 @@ The high level flow is:
 
 1. relays the SuperchainWETH to the destination chain
 2. converts the SuperchainWETH to ETH
+
+## 🚀 Getting started
+
+### Prerequisites: Foundry & Node
+
+Follow [this guide](https://book.getfoundry.sh/getting-started/installation) to install Foundry
+
+### 1. Create a new repository using this template:
+
+Click the "Use this template" button above on GitHub, or [generate directly](https://github.com/new?template_name=superchain-starter&template_owner=ethereum-optimism)
+
+### 2. Clone your new repository
+
+```bash
+git clone <your-new-repository-url>
+cd superchain-starter-multisend
+```
+
+### 3. Install dependencies
+
+```bash
+pnpm i
+```
+
+### 4. Get started
+
+```bash
+pnpm dev
+```
+
+This command will:
+
+- Start a local Superchain network (1 L1 chain and 2 L2 chains) using [supersim](https://github.com/ethereum-optimism/supersim)
+- Launch the frontend development server at (http://localhost:5173)
+- Deploy the smart contracts to your local network
+
+Start building on the Superchain!
 
 ## 📚 More examples, docs
 
