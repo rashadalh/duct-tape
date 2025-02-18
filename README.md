@@ -159,6 +159,15 @@ This command will:
 
 Start building on the Superchain!
 
+## Security notice
+
+This contract is not production ready. For one, the contract does not consider the case when the dispersal fails on the destination chain
+
+1.  if one of the recipient is a contract that has a reverting `receive()` handler
+2.  `relay(...)` call will revert, meaning none of the recipients will be able to receive the dispersal
+
+One unimplemented mitigation is to add a withdrawal flow for any failed recipients such that one recipient's failure to receive doesn't prevent the others
+
 ## 📚 More examples, docs
 
 - Interop recipies / guides: https://docs.optimism.io/app-developers/tutorials/interop
