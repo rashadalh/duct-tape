@@ -4,6 +4,8 @@
 
 Example Superchain app (contract + frontend) that uses interop to send ETH to multiple recipients on a different chain.
 
+<img width="1253" alt="Screenshot 2025-02-18 at 8 17 02 AM" src="https://github.com/user-attachments/assets/841675c2-590e-4632-84a9-43cea2269a34" />
+
 ## 🔗 Contracts
 
 ### [CrossChainMultisend.sol](./contracts/src/CrossChainMultisend.sol)
