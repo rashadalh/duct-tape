@@ -12,6 +12,18 @@ const config = createConfig({
   },
 });
 
+// When using using the interop-alpha chains, use the following config:
+
+// import { interopAlpha0, interopAlpha1 } from '@eth-optimism/viem/chains';
+
+// const config = createConfig({
+//   chains: [interopAlpha0, interopAlpha1],
+//   transports: {
+//     [interopAlpha0.id]: http(),
+//     [interopAlpha1.id]: http(),
+//   },
+// });
+
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <WagmiProvider config={config}>
