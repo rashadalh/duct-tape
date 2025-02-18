@@ -8,7 +8,7 @@ import {ISuperchainWETH} from "@interop-lib/interfaces/ISuperchainWETH.sol";
 
 error IncorrectValue();
 
-contract RemoteMultisend {
+contract CrossChainMultisend {
     struct Send {
         address to;
         uint256 amount;

@@ -2,20 +2,6 @@
 
 Smart contracts demonstrating cross-chain messaging on the Superchain using [interoperability](https://specs.optimism.io/interop/overview.html).
 
-## Contracts
-
-### [CrossChainCounter.sol](./src/CrossChainCounter.sol)
-
-- Counter that can only be incremented through cross-chain messages
-- Uses `L2ToL2CrossDomainMessenger` for message verification
-- Tracks last incrementer's chain ID and address
-- Events emitted for all increments with source chain details
-
-### [CrossChainCounterIncrementer.sol](./src/CrossChainCounterIncrementer.sol)
-
-- Sends cross-chain increment messages to `CrossChainCounter` instances
-- Uses `L2ToL2CrossDomainMessenger` for message passing
-
 ## Development
 
 ### Dependencies
@@ -40,13 +26,13 @@ forge test
 
 Deploy to multiple chains using either:
 
-1. Super CLI (recommended):
+1. Super CLI:
 
 ```bash
 cd ../ && pnpm sup
 ```
 
-2. Direct Forge script:
+2. Direct Forge script deployment:
 
 ```bash
 forge script script/Deploy.s.sol --rpc-url $RPC_URL --broadcast
@@ -54,18 +40,15 @@ forge script script/Deploy.s.sol --rpc-url $RPC_URL --broadcast
 
 ## Architecture
 
-### Cross-Chain Messaging Flow (1)
+### Cross-Chain Multisend Flow
 
-1. User calls `increment(chainId, counterAddress)` on `CrossChainCounterIncrementer`
-2. `CrossChainCounterIncrementer` sends message via `L2ToL2CrossDomainMessenger`
-3. Target chain's messenger delivers message to `CrossChainCounter`
-4. `CrossChainCounter` verifies messenger and executes increment
-
-### Cross-Chain Messaging Flow (2)
-
-1. User calls `increment(chainId, counterAddress)` on `CrossChainCounterIncrementer` by directly ending a message through `L2ToL2CrossDomainMessenger`
-2. Target chain's messenger delivers message to `CrossChainCounter`
-3. `CrossChainCounter` verifies messenger and executes increment
+1. User calls `send(destinationChainId, sends[])` on `CrossChainMultisend` with ETH value
+2. Contract bridges ETH to destination chain using `SuperchainWETH.sendETH()`
+3. Contract sends relay message via `L2ToL2CrossDomainMessenger`
+4. On destination chain:
+   - Message is delivered to `CrossChainMultisend.relay()`
+   - Contract verifies the ETH bridge message was successful
+   - Contract distributes ETH to all specified recipients
 
 ## Testing
 
@@ -81,3 +64,12 @@ forge test
 ## License
 
 MIT
+
+### Security notice
+
+This contract is not production ready. For one, the contract does not consider the case when the dispersal fails on the destination chain
+
+1.  if one of the recipient is a contract that has a reverting `receive()` handler
+2.  `relay(...)` call will revert, meaning none of the recipients will be able to receive the dispersal
+
+One unimplemented mitigation is to add a withdrawal flow for any failed recipients such that one recipient's failure to receive doesn't prevent the others
