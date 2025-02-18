@@ -161,6 +161,9 @@ For reference, here are some examples of this separation in production applicati
 
 ### Examples
 
+- [Crosschain Flash Loan](https://github.com/ethereum-optimism/superchain-starter-xchain-flash-loan-example)
+- [Multisend](https://github.com/ethereum-optimism/superchain-starter-multisend)
+
 ## ⚖️ License
 
 Files are licensed under the [MIT license](./LICENSE).
