@@ -3,23 +3,19 @@
 A lightweight, focused starting point for prototyping/building on the Superchain, featuring
 
 - 🛠 [foundry](https://github.com/foundry-rs/foundry), [supersim](https://github.com/ethereum-optimism/supersim), [super-cli](https://github.com/ethereum-optimism/super-cli)
-- 🎨 vite, tailwind-css, shadcn/ui, wagmi, viem
+- 🎨 wagmi, viem
 - [@eth-optimism/viem](https://github.com/ethereum-optimism/ecosystem/tree/main/packages/viem), [@eth-optimism/wagmi](https://github.com/ethereum-optimism/ecosystem/tree/main/packages/wagmi) - viem/wagmi extensions for the Superchain
 - 💡 simple example app - CrossChainCounter
 
 <img width="1007" alt="Screenshot 2025-02-17 at 8 09 02 PM" src="https://github.com/user-attachments/assets/af270104-9958-4e0b-8d1f-9b7c099143c9" />
 
-### Looking for more advanced examples?
-
-... WIP
-
-## 🦬 Are you building at EthDenver 2025?
-
-... WIP
-
 ## 🚀 Getting started
 
 Get prototyping Superchain apps in under < 1 min! ❤️‍🔥
+
+### Prerequisites: Foundry & Node
+
+Follow [this guide](https://book.getfoundry.sh/getting-started/installation) to install Foundry
 
 ### 1. Create a new repository using this template:
 
@@ -71,15 +67,7 @@ Once you're ready to deploy, start `sup` in interactive mode
 pnpm sup
 ```
 
-Then you can follow the steps to deploy to supersim or the interop-alpha devnet
-
-```bash
- Sup, what would you like to do on the Superchain today? ✨
-
- ❯ 🔄 Pick up where you left off: Deploy a contract
-   🚀 Deploy a contract
-   🌉 Bridge assets
-```
+Then you can follow the steps to deploy to `supersim` or the `interop-alpha` devnet
 
 ```bash
 
@@ -133,66 +121,27 @@ pnpm build:contracts
 - Unlike the [single chain Counter](https://github.com/foundry-rs/foundry/blob/master/crates/forge/assets/CounterTemplate.sol), this one can only be incremented via cross-chain messages
 - Learn more about this contract [here](./contracts/README.md)
 
-#### Frontend for `CrossChainCounter`
-
-- Simple frontend to interact with `CrossChainCounter`
-
 ### Tools
 
-Superchain Starter kit is comprised of:
+- **[supersim](https://github.com/ethereum-optimism/supersim)**: Local test environment with 1 L1 and multiple L2 chains, includes pre-deployed Superchain contracts
+- **[sup (super-cli)](https://github.com/ethereum-optimism/super-cli)**: Deploy and verify contracts across multiple chains, with sponsored transactions
+- **foundry**: Blazing fast smart contract development framework
+- **wagmi / viem**: Best in class Typescript library for the EVM,
+- **vite / tailwind / shadcn**: Frontend development tools and UI components
 
-#### supersim
+### 📁 Directory structure
 
-- local multichain environment that brings up 1 L1 chain and multiple L2 chains
-- chains come with all of the [useful contracts](https://docs.optimism.io/app-developers/tutorials/supersim/chain-env/included-contracts) already deployed to replicate the Superchain environment
-
-#### sup (super-cli)
-
-- deploy & verify multichain contracts on the Superchain
-- gasless, sponsored deploys (no funded wallet required for `interop-alpha`)
-- interactive mode (no more juggling cli flags)
-- seamless Foundry project compatibility - consumes Forge artifacts and emits standard broadcast outputs
-
-#### foundry
-
-- one of most popular Ethereum development toolchain
-- blazing fast Ethereum toolchain to build & test smart contracts
-
-#### wagmi / viem
-
-- best in class typescript library for building onchain apps
-- @eth-optimism/wagmi and @eth-optimism/viem adds useful extensions for interacting with Superchain apps
-
-#### vite / tailwind / shadcn
-
-- modern frontend tooling for fast, responsive UI development
-
-## 📁 Directory structure
-
-This starter kit is organized to get you building on the Superchain as quickly as possible. The repository combines smart contracts and a frontend in a single repo. Solidity code goes in `/contracts`, and the typescript frontend goes in `/src`
+This starter kit is organized to get you building on the Superchain as quickly as possible. Solidity code goes in `/contracts`, and the typescript frontend goes in `/src`
 
 ```
 superchain-starter/
-├── contracts/                   # Smart contract code
-│   ├── src/                    # Contract source files
-│   │   └── ui/                # UI components
-│   ├── test/                   # Contract test files
-│   ├── script/                 # Forge scripts
-│   ├── lib/                    # Contract dependencies
-│   └── foundry.toml           # Foundry configuration
-├── src/                        # Frontend source code
-│   ├── components/             # React components
-│   │   └── ui/                # UI components
-│   ├── abi/                    # Contract ABIs
-│   ├── lib/                    # Frontend utilities
-│   ├── App.tsx                # Main application component
-│   ├── Providers.tsx          # Application providers
-│   └── main.tsx               # Application entry point
+├── contracts/                   # Smart contract code (Foundry)
+├── src/                        # Frontend code (vite, tailwind, shadcn, wagmi, viem)
+│   └── App.tsx                # Main application component
 ├── public/                     # Static assets for the frontend
-├── supersim-logs/             # Local network logs
+├── supersim-logs/             # Local supersim logs
 ├── package.json               # Project dependencies and scripts
-├── mprocs.yaml               # Development process manager config
-└── README.md                 # Project documentation
+└── mprocs.yaml               # Run multiple commands using mprocs
 ```
 
 ### A note on project structure
@@ -204,6 +153,13 @@ For reference, here are some examples of this separation in production applicati
 - Uniswap: [Uniswap contracts](https://github.com/Uniswap/v4-core), [Uniswap frontend](https://github.com/Uniswap/interface)
 - Across: [Across contracts](https://github.com/across-protocol/contracts), [Across frontend](https://github.com/across-protocol/frontend)
 - Farcaster: [Farcaster contracts](https://github.com/farcasterxyz/contracts)
+
+## 📚 More examples, docs
+
+- Interop recipies / guides: https://docs.optimism.io/app-developers/tutorials/interop
+- Superchain Dev Console: https://console.optimism.io/
+
+### Examples
 
 ## ⚖️ License
 
