@@ -45,7 +45,7 @@ Start building on the Superchain!
 
 ## 🔗 Contracts
 
-### [CrossChainMultisend.sol](./src/CrossChainMultisend.sol)
+### [CrossChainMultisend.sol](./contracts/src/CrossChainMultisend.sol)
 
 - Enables sending ETH to multiple recipients on a different chain
 - Uses `L2ToL2CrossDomainMessenger` for cross-chain message passing
