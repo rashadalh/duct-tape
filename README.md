@@ -25,7 +25,7 @@ Click the "Use this template" button above on GitHub, or [generate directly](htt
 
 ```bash
 git clone <your-new-repository-url>
-cd superchain-starter
+cd <your-new-repository>
 ```
 
 ### 3. Install dependencies
