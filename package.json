@@ -9,7 +9,9 @@
     "dev:supersim": "pnpm supersim --interop.autorelay --logs.directory supersim-logs",
     "build:frontend": "vite build",
     "build:contracts": "forge build --root contracts",
-    "deploy:sup:supersim": "pnpm build:contracts && sup deploy create2 --chains supersiml2a,supersiml2b --salt ethers phoenix --forge-artifact-path contracts/out/PingPong.sol/PingPong.json --constructor-args 901 --network supersim --private-key 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a",
+    "deploy:supersim": "pnpm build:contracts && sup deploy create2 --chains supersiml2a,supersiml2b --salt ethers phoenix --forge-artifact-path contracts/out/CrossChainCounter.sol/CrossChainCounter.json --network supersim --private-key 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a",
+    "deploy:counter-incrementer:supersim": "pnpm build:contracts && sup deploy create2 --chains supersiml2a,supersiml2b --salt ethers phoenix --forge-artifact-path contracts/out/CrossChainCounterIncrementer.sol/CrossChainCounterIncrementer.json --network supersim --private-key 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a",
+    "deploy:interop-alpha": "pnpm build:contracts && sup deploy create2 --chains interop-alpha-0,interop-alpha-1 --salt ethers phoenix --forge-artifact-path contracts/out/CrossChainCounter.sol/CrossChainCounter.json --network interop-alpha --verify",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -19,7 +21,8 @@
     "shadcn:add": "pnpm dlx shadcn@canary add"
   },
   "dependencies": {
-    "@eth-optimism/viem": "^0.3.1",
+    "@eth-optimism/viem": "^0.3.2",
+    "@radix-ui/react-separator": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-query": "^5.66.0",
@@ -37,7 +40,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
-    "@eth-optimism/super-cli": "^0.0.6",
+    "@eth-optimism/super-cli": "^0.0.7",
     "@types/node": "^22.13.1",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",

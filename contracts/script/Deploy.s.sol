@@ -6,9 +6,10 @@ import {Vm} from "forge-std/Vm.sol";
 import {ICreateX} from "createx/ICreateX.sol";
 
 import {DeployUtils} from "../libraries/DeployUtils.sol";
-import {PingPong} from "../src/PingPong.sol";
+import {CrossChainCounter} from "../src/CrossChainCounter.sol";
 import {RemoteMultisend} from "../src/RemoteMultisend.sol";
 
+// Example forge script for deploying as an alternative to sup: super-cli (https://github.com/ethereum-optimism/super-cli)
 contract Deploy is Script {
     /// @notice Array of RPC URLs to deploy to, deploy to supersim 901 and 902 by default.
     string[] private rpcUrls = ["http://localhost:9545", "http://localhost:9546"];
@@ -26,15 +27,14 @@ contract Deploy is Script {
 
             console.log("Deploying to RPC: ", rpcUrl);
             vm.createSelectFork(rpcUrl);
-            deployPingPongContract();
+            deployCrossChainCounterContract();
             deployRemoteMultisendContract();
         }
     }
 
-    function deployPingPongContract() public broadcast returns (address addr_) {
-        uint256 serverChainId = 901;
-        bytes memory initCode = abi.encodePacked(type(PingPong).creationCode, abi.encode(serverChainId));
-        addr_ = DeployUtils.deployContract("PingPong", _implSalt(), initCode);
+    function deployCrossChainCounterContract() public broadcast returns (address addr_) {
+        bytes memory initCode = abi.encodePacked(type(CrossChainCounter).creationCode);
+        addr_ = DeployUtils.deployContract("CrossChainCounter", _implSalt(), initCode);
     }
 
     function deployRemoteMultisendContract() public broadcast returns (address addr_) {
