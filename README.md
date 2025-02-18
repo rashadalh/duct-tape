@@ -7,6 +7,8 @@ A lightweight, focused starting point for prototyping/building on the Superchain
 - [@eth-optimism/viem](https://github.com/ethereum-optimism/ecosystem/tree/main/packages/viem), [@eth-optimism/wagmi](https://github.com/ethereum-optimism/ecosystem/tree/main/packages/wagmi) - viem/wagmi extensions for the Superchain
 - 💡 simple example app - CrossChainCounter
 
+<img width="1007" alt="Screenshot 2025-02-17 at 8 09 02 PM" src="https://github.com/user-attachments/assets/af270104-9958-4e0b-8d1f-9b7c099143c9" />
+
 ### Looking for more advanced examples?
 
 ... WIP
