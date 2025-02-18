@@ -156,7 +156,7 @@ For reference, here are some examples of this separation in production applicati
 
 ## 📚 More examples, docs
 
-- Interop recipies / guides: https://docs.optimism.io/app-developers/tutorials/interop
+- Interop recipes / guides: https://docs.optimism.io/app-developers/tutorials/interop
 - Superchain Dev Console: https://console.optimism.io/
 
 ### Examples
