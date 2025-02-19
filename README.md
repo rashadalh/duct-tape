@@ -170,7 +170,7 @@ One unimplemented mitigation is to add a withdrawal flow for any failed recipien
 
 ## 📚 More examples, docs
 
-- Interop recipies / guides: https://docs.optimism.io/app-developers/tutorials/interop
+- Interop recipes / guides: https://docs.optimism.io/app-developers/tutorials/interop
 - Superchain Dev Console: https://console.optimism.io/
 
 ## ⚖️ License
