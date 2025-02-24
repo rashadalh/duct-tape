@@ -37,7 +37,7 @@ const CONFIG = {
     '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
   ),
   supportedChains: [supersimL2A, supersimL2B] as Chain[],
-  crossChainMultisendAddress: '0xfd9382f24aa4413628d799d287f695289b924f75',
+  crossChainMultisendAddress: '0x6d7c9fb07e4f118e5b1c804bde05c5c0bdf3f1fd',
 } as const;
 
 // Add this helper function near the top of the file, after CONFIG
