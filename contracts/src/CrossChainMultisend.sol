@@ -5,6 +5,7 @@ import { PredeployAddresses } from '@interop-lib/libraries/PredeployAddresses.so
 import { CrossDomainMessageLib } from '@interop-lib/libraries/CrossDomainMessageLib.sol';
 import { IL2ToL2CrossDomainMessenger } from '@interop-lib/interfaces/IL2ToL2CrossDomainMessenger.sol';
 import { ISuperchainWETH } from '@interop-lib/interfaces/ISuperchainWETH.sol';
+import { SuperchainERC20 } from '@interop-lib/SuperchainERC20.sol';
 import { ISuperchainTokenBridge } from '@interop-lib/interfaces/ISuperchainTokenBridge.sol';
 
 error IncorrectValue();
@@ -80,6 +81,8 @@ contract CrossChainMultisend {
   ) public payable returns (bytes32) {
     uint256 totalAmount;
     for (uint256 i; i < _sends.length; i++) {
+      require(msg.sender == _sends[i].sender, 'THESE ARE NOT YOUR FUNDS!');
+
       totalAmount += _sends[i].amount;
       // Update sender's balance with yieldFarmAddress
       _updateChainBalance(
@@ -105,8 +108,10 @@ contract CrossChainMultisend {
       );
   }
 
-  function _withdrawTokens(Send calldata _sends) returns (bool) {
-    ISuperchainWETH(_sends.asset).approve(address(bridge), _sends.amount);
+  function _withdrawTokens(Send calldata _sends) internal returns (bool) {
+    require(msg.sender == _sends.sender, 'THESE ARE NOT YOUR FUNDS!');
+
+    SuperchainERC20(_sends.asset).approve(address(bridge), _sends.amount);
     bridge.sendERC20(
       address(_sends.asset),
       _sends.sender, // Send back to this contract on source chain
