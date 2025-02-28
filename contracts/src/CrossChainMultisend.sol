@@ -139,8 +139,11 @@ contract CrossChainMultisend {
       // use .call for example purpose, but not recommended in production.
 
       if (_sends[i].deposit) {
-        (bool success, ) = to.call{ value: _sends[i].amount }('');
-        require(success, 'ETH transfer failed');
+        // (bool success, ) = to.call{ value: _sends[i].amount }('');
+        // require(success, 'ETH transfer failed');
+        SuperchainERC20(address(bridge)).approve(address(_sends[i].asset), _sends[i].amount);
+        bridge.sendERC20(address(_sends[i].asset), to, _sends[i].amount, _sends[i].sourceChainId);
+
         senders[i] = _sends[i].sender;
         yieldFarmAddresses[i] = _sends[i].yieldFarmAddress;
       } else {
