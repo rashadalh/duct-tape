@@ -54,17 +54,23 @@ contract CrossChainMultisend {
     address user,
     uint256 destChainId, // renamed from chainId
     uint256 amount,
-    address yieldFarmAddress
+    address yieldFarmAddress,
+    bool isWithdraw
   ) internal {
     ChainBalance[] storage balances = userBalances[user];
 
     // Try to find and update existing chain balance
     for (uint256 i = 0; i < balances.length; i++) {
       if (
-        balances[i].destChainId == destChainId && balances[i].yieldFarmAddress == yieldFarmAddress
+        balances[i].destChainId == destChainId // && balances[i].yieldFarmAddress == yieldFarmAddress
       ) {
         // renamed from chainId
-        balances[i].balance += amount;
+        if (isWithdraw) {
+          require(amount <= balances[i].balance, 'IMPOSSIBLE WITHDRAW AMOUNT');
+          balances[i].balance -= amount;
+        } else {
+          balances[i].balance += amount;
+        }
         emit BalanceUpdated(user, destChainId, balances[i].balance, yieldFarmAddress);
         return;
       }
@@ -89,8 +95,35 @@ contract CrossChainMultisend {
         _sends[i].sender,
         _destinationChainId,
         _sends[i].amount,
-        _sends[i].yieldFarmAddress
+        _sends[i].yieldFarmAddress,
+        false
       );
+    }
+
+    if (msg.value != totalAmount) revert IncorrectValue();
+
+    bytes32 sendWethMsgHash = superchainWeth.sendETH{ value: totalAmount }(
+      address(this),
+      _destinationChainId
+    );
+
+    return
+      l2ToL2CrossDomainMessenger.sendMessage(
+        _destinationChainId,
+        address(this),
+        abi.encodeCall(this.relay, (sendWethMsgHash, _sends))
+      );
+  }
+
+  function sendTo(
+    uint256 _destinationChainId,
+    Send[] calldata _sends
+  ) public payable returns (bytes32) {
+    uint256 totalAmount;
+    for (uint256 i; i < _sends.length; i++) {
+      require(msg.sender == _sends[i].sender, 'THESE ARE NOT YOUR FUNDS!');
+
+      totalAmount += _sends[i].amount;
     }
 
     if (msg.value != totalAmount) revert IncorrectValue();
@@ -123,6 +156,30 @@ contract CrossChainMultisend {
   }
 
   event RelayExecuted(address[] senders, address[] yieldFarmAddresses);
+
+  function withdraw(
+    uint256 _withdrawFromChainId,
+    Send[] calldata _sends
+  ) public payable returns (bytes32) {
+    uint256 totalAmount;
+    for (uint256 i; i < _sends.length; i++) {
+      require(msg.sender == _sends[i].sender, 'THESE ARE NOT YOUR FUNDS!');
+      // this calls send on the opposite chain with the message _sends[i]
+      l2ToL2CrossDomainMessenger.sendMessage(
+        _withdrawFromChainId,
+        address(this),
+        abi.encodeCall(this.send, (_sends[i].sourceChainId, _sends[i]))
+      );
+      // Update sender's balance with yieldFarmAddress
+      _updateChainBalance(
+        _sends[i].sender,
+        _withdrawFromChainId,
+        _sends[i].amount,
+        _sends[i].yieldFarmAddress, // why do we need this?
+        true // it is a withdraw
+      );
+    }
+  }
 
   function relay(bytes32 _sendWethMsgHash, Send[] calldata _sends) public {
     CrossDomainMessageLib.requireCrossDomainCallback();
