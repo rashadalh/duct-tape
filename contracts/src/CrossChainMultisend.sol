@@ -11,10 +11,10 @@ import { ISuperchainTokenBridge } from '@interop-lib/interfaces/ISuperchainToken
 error IncorrectValue();
 
 interface IYieldFarm {
-    function stake() external payable;
-    function withdraw(uint256 _amount) external;
-}
+  function stake() external payable;
 
+  function withdraw(uint256 _amount) external;
+}
 
 contract CrossChainMultisend {
   // Updated structure with renamed chainId field
@@ -26,7 +26,6 @@ contract CrossChainMultisend {
 
   // Mapping from address to array of chain balances
   mapping(address => ChainBalance[]) public userBalances;
-
 
   // Updated event with renamed parameter
   event BalanceUpdated(
@@ -121,28 +120,26 @@ contract CrossChainMultisend {
       );
   }
 
-  function sendToReturn(
-    Send[] calldata _sends
-  ) public returns (bytes32) {
+  function sendToReturn(Send[] calldata _sends) public returns (bytes32) {
     CrossDomainMessageLib.requireCrossDomainCallback();
-    
+
     IYieldFarm yieldFarm = IYieldFarm(_sends[0].yieldFarmAddress);
     yieldFarm.withdraw(_sends[0].amount);
-    
+
     //Maybe we don't need the next line
-    require(address(this).balance >= _sends[0].amount, "Insufficient contract balance"); 
+    require(address(this).balance >= _sends[0].amount, 'Insufficient contract balance');
     bytes32 sendWethMsgHash = superchainWeth.sendETH{ value: _sends[0].amount }(
       address(this),
       _sends[0].sourceChainId
     );
 
-    return l2ToL2CrossDomainMessenger.sendMessage(
-      _sends[0].sourceChainId,
-      address(this),
-      abi.encodeCall(this.relayToReturn, (sendWethMsgHash, _sends))
-    );
+    return
+      l2ToL2CrossDomainMessenger.sendMessage(
+        _sends[0].sourceChainId,
+        address(this),
+        abi.encodeCall(this.relayToReturn, (sendWethMsgHash, _sends))
+      );
   }
-
 
   function _withdrawTokens(Send calldata _sends) internal returns (bool) {
     require(msg.sender == _sends.sender, 'THESE ARE NOT YOUR FUNDS!');
@@ -160,21 +157,17 @@ contract CrossChainMultisend {
 
   event RelayExecuted(address[] senders, address[] yieldFarmAddresses);
 
-  function withdraw(
-    uint256 _withdrawFromChainId,
-    Send[] calldata _sends
-  ) public {
-    
-      l2ToL2CrossDomainMessenger.sendMessage(
-        _withdrawFromChainId,
-        address(this),
-        abi.encodeCall(this.sendToReturn, (_sends))
-      );
+  function withdraw(uint256 _withdrawFromChainId, Send[] calldata _sends) public {
+    l2ToL2CrossDomainMessenger.sendMessage(
+      _withdrawFromChainId,
+      address(this),
+      abi.encodeCall(this.sendToReturn, (_sends))
+    );
 
-      // this calls send on the opposite chain with the message _sends[i]
-      // TODO -> Add a check to ensure that the user has enough balance to withdraw
+    // this calls send on the opposite chain with the message _sends[i]
+    // TODO -> Add a check to ensure that the user has enough balance to withdraw
 
-      /*
+    /*
       bytes32 sendWethMsgHash = superchainWeth.sendETH{ value: 0 }(
       address(this),
       _withdrawFromChainId
@@ -187,7 +180,7 @@ contract CrossChainMultisend {
       );
       */
 
-      /* 
+    /*
       _updateChainBalance(
         _sends[0].sender,
         _withdrawFromChainId,
@@ -196,7 +189,6 @@ contract CrossChainMultisend {
         true // it is a withdraw
       );
       */
-  
   }
 
   function relay(bytes32 _sendWethMsgHash, Send[] calldata _sends) public {
@@ -213,7 +205,7 @@ contract CrossChainMultisend {
       IYieldFarm yieldFarm = IYieldFarm(_sends[i].yieldFarmAddress);
       // use .call for example purpose, but not recommended in production.
       //(bool success,) = to.call{value: _sends[i].amount}("");
-      yieldFarm.stake{value: _sends[i].amount}();
+      yieldFarm.stake{ value: _sends[i].amount }();
       //require(success, "ETH transfer failed");
       senders[i] = _sends[i].sender;
       yieldFarmAddresses[i] = _sends[i].yieldFarmAddress;
@@ -229,8 +221,8 @@ contract CrossChainMultisend {
     for (uint256 i; i < _sends.length; i++) {
       address to = _sends[i].sender;
       // use .call for example purpose, but not recommended in production.
-      (bool success,) = to.call{value: _sends[i].amount}("");
-      require(success, "ETH transfer failed");
+      (bool success, ) = to.call{ value: _sends[i].amount }('');
+      require(success, 'ETH transfer failed');
     }
   }
 
