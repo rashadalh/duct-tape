@@ -35,7 +35,6 @@ contract CrossChainMultisend {
     uint256 amount;
     address sender;
     address yieldFarmAddress;
-    bool deposit;
     uint256 sourceChainId; // Added sourceChainId
     address asset; // Underlying erc20 token to be sent
   }
@@ -115,31 +114,23 @@ contract CrossChainMultisend {
       );
   }
 
-  function sendTo(
-    uint256 _destinationChainId,
+  function sendToReturn(
     Send[] calldata _sends
-  ) public payable returns (bytes32) {
-    uint256 totalAmount;
-    for (uint256 i; i < _sends.length; i++) {
-      require(msg.sender == _sends[i].sender, 'THESE ARE NOT YOUR FUNDS!');
-
-      totalAmount += _sends[i].amount;
-    }
-
-    if (msg.value != totalAmount) revert IncorrectValue();
-
-    bytes32 sendWethMsgHash = superchainWeth.sendETH{ value: totalAmount }(
+  ) public returns (bytes32) {
+    CrossDomainMessageLib.requireCrossDomainCallback();
+    require(address(this).balance >= _sends[0].amount, "Insufficient contract balance");
+    bytes32 sendWethMsgHash = superchainWeth.sendETH{ value: _sends[0].amount }(
       address(this),
-      _destinationChainId
+      _sends[0].sourceChainId
     );
 
-    return
-      l2ToL2CrossDomainMessenger.sendMessage(
-        _destinationChainId,
-        address(this),
-        abi.encodeCall(this.relay, (sendWethMsgHash, _sends))
-      );
+    return l2ToL2CrossDomainMessenger.sendMessage(
+      _sends[0].sourceChainId,
+      address(this),
+      abi.encodeCall(this.relayToReturn, (sendWethMsgHash, _sends))
+    );
   }
+
 
   function _withdrawTokens(Send calldata _sends) internal returns (bool) {
     require(msg.sender == _sends.sender, 'THESE ARE NOT YOUR FUNDS!');
@@ -160,25 +151,40 @@ contract CrossChainMultisend {
   function withdraw(
     uint256 _withdrawFromChainId,
     Send[] calldata _sends
-  ) public payable returns (bytes32) {
-    uint256 totalAmount;
-    for (uint256 i; i < _sends.length; i++) {
-      require(msg.sender == _sends[i].sender, 'THESE ARE NOT YOUR FUNDS!');
-      // this calls send on the opposite chain with the message _sends[i]
+  ) public {
+    
       l2ToL2CrossDomainMessenger.sendMessage(
         _withdrawFromChainId,
         address(this),
-        abi.encodeCall(this.send, (_sends[i].sourceChainId, _sends[i]))
+        abi.encodeCall(this.sendToReturn, (_sends))
       );
-      // Update sender's balance with yieldFarmAddress
-      _updateChainBalance(
-        _sends[i].sender,
+
+      // this calls send on the opposite chain with the message _sends[i]
+      // TODO -> Add a check to ensure that the user has enough balance to withdraw
+
+      /*
+      bytes32 sendWethMsgHash = superchainWeth.sendETH{ value: 0 }(
+      address(this),
+      _withdrawFromChainId
+      );
+
+      return l2ToL2CrossDomainMessenger.sendMessage(
         _withdrawFromChainId,
-        _sends[i].amount,
-        _sends[i].yieldFarmAddress, // why do we need this?
+        address(this),
+        abi.encodeCall(this.sendToReturn, (sendWethMsgHash, _sends))
+      );
+      */
+
+      /* 
+      _updateChainBalance(
+        _sends[0].sender,
+        _withdrawFromChainId,
+        _sends[0].amount,
+        _sends[0].yieldFarmAddress, // why do we need this?
         true // it is a withdraw
       );
-    }
+      */
+  
   }
 
   function relay(bytes32 _sendWethMsgHash, Send[] calldata _sends) public {
@@ -194,23 +200,25 @@ contract CrossChainMultisend {
     for (uint256 i; i < _sends.length; i++) {
       address to = _sends[i].to;
       // use .call for example purpose, but not recommended in production.
-
-      if (_sends[i].deposit) {
-        // (bool success, ) = to.call{ value: _sends[i].amount }('');
-        // require(success, 'ETH transfer failed');
-        SuperchainERC20(address(bridge)).approve(address(_sends[i].asset), _sends[i].amount);
-        bridge.sendERC20(address(_sends[i].asset), to, _sends[i].amount, _sends[i].sourceChainId);
-
-        senders[i] = _sends[i].sender;
-        yieldFarmAddresses[i] = _sends[i].yieldFarmAddress;
-      } else {
-        //Extract tokens from the yield farm
-        //Transfer weth to the user
-        _withdrawTokens(_sends[i]);
-      }
+      (bool success,) = to.call{value: _sends[i].amount}("");
+      require(success, "ETH transfer failed");
+      senders[i] = _sends[i].sender;
+      yieldFarmAddresses[i] = _sends[i].yieldFarmAddress;
     }
 
     emit RelayExecuted(senders, yieldFarmAddresses);
+  }
+
+  function relayToReturn(bytes32 _sendWethMsgHash, Send[] calldata _sends) public {
+    CrossDomainMessageLib.requireCrossDomainCallback();
+    CrossDomainMessageLib.requireMessageSuccess(_sendWethMsgHash);
+
+    for (uint256 i; i < _sends.length; i++) {
+      address to = _sends[i].sender;
+      // use .call for example purpose, but not recommended in production.
+      (bool success,) = to.call{value: _sends[i].amount}("");
+      require(success, "ETH transfer failed");
+    }
   }
 
   // Get all chain balances for a user
