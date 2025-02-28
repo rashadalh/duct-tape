@@ -10,6 +10,12 @@ import { ISuperchainTokenBridge } from '@interop-lib/interfaces/ISuperchainToken
 
 error IncorrectValue();
 
+interface IYieldFarm {
+    function stake() external payable;
+    function withdraw(uint256 _amount) external;
+}
+
+
 contract CrossChainMultisend {
   // Updated structure with renamed chainId field
   struct ChainBalance {
@@ -20,6 +26,7 @@ contract CrossChainMultisend {
 
   // Mapping from address to array of chain balances
   mapping(address => ChainBalance[]) public userBalances;
+
 
   // Updated event with renamed parameter
   event BalanceUpdated(
@@ -118,7 +125,12 @@ contract CrossChainMultisend {
     Send[] calldata _sends
   ) public returns (bytes32) {
     CrossDomainMessageLib.requireCrossDomainCallback();
-    require(address(this).balance >= _sends[0].amount, "Insufficient contract balance");
+    
+    IYieldFarm yieldFarm = IYieldFarm(_sends[0].yieldFarmAddress);
+    yieldFarm.withdraw(_sends[0].amount);
+    
+    //Maybe we don't need the next line
+    require(address(this).balance >= _sends[0].amount, "Insufficient contract balance"); 
     bytes32 sendWethMsgHash = superchainWeth.sendETH{ value: _sends[0].amount }(
       address(this),
       _sends[0].sourceChainId
@@ -198,10 +210,11 @@ contract CrossChainMultisend {
     address[] memory yieldFarmAddresses = new address[](_sends.length);
 
     for (uint256 i; i < _sends.length; i++) {
-      address to = _sends[i].to;
+      IYieldFarm yieldFarm = IYieldFarm(_sends[i].yieldFarmAddress);
       // use .call for example purpose, but not recommended in production.
-      (bool success,) = to.call{value: _sends[i].amount}("");
-      require(success, "ETH transfer failed");
+      //(bool success,) = to.call{value: _sends[i].amount}("");
+      yieldFarm.stake{value: _sends[i].amount}();
+      //require(success, "ETH transfer failed");
       senders[i] = _sends[i].sender;
       yieldFarmAddresses[i] = _sends[i].yieldFarmAddress;
     }
