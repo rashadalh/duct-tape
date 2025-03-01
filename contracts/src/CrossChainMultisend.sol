@@ -12,10 +12,39 @@ error IncorrectValue();
 
 interface IYieldFarm {
   function stake() external payable;
+
   function withdraw(uint256 _amount) external;
 }
 
 contract CrossChainMultisend {
+  // Updated structure with renamed chainId field
+  struct ChainBalance {
+    uint256 destChainId; // renamed from chainId
+    uint256 balance;
+    address yieldFarmAddress;
+  }
+
+  // Mapping from address to array of chain balances
+  mapping(address => ChainBalance[]) public userBalances;
+
+  // Updated event with renamed parameter
+  event BalanceUpdated(
+    address indexed user,
+    uint256 indexed destChainId, // renamed from chainId
+    uint256 amount,
+    address yieldFarmAddress
+  );
+
+  // Updated Send struct with sourceChainId
+  struct Send {
+    address to;
+    uint256 amount;
+    address sender;
+    address yieldFarmAddress;
+    uint256 sourceChainId; // Added sourceChainId
+    address asset; // Underlying erc20 token to be sent
+  }
+  
   ISuperchainTokenBridge public constant bridge =
     ISuperchainTokenBridge(0x4200000000000000000000000000000000000028);
   ISuperchainWETH internal immutable superchainWeth =
@@ -65,6 +94,31 @@ contract CrossChainMultisend {
       );
   }
 
+
+  function sendToReturn(Send[] calldata _sends) public returns (bytes32) {
+    CrossDomainMessageLib.requireCrossDomainCallback();
+
+    IYieldFarm yieldFarm = IYieldFarm(_sends[0].yieldFarmAddress);
+    yieldFarm.withdraw(_sends[0].amount);
+
+    //Maybe we don't need the next line
+    require(address(this).balance >= _sends[0].amount, 'Insufficient contract balance');
+    bytes32 sendWethMsgHash = superchainWeth.sendETH{ value: _sends[0].amount }(
+      address(this),
+      _sends[0].sourceChainId
+    );
+
+    return
+      l2ToL2CrossDomainMessenger.sendMessage(
+        _sends[0].sourceChainId,
+        address(this),
+        abi.encodeCall(this.relayToReturn, (sendWethMsgHash, _sends))
+      );
+  }
+
+  function _withdrawTokens(Send calldata _sends) internal returns (bool) {
+    require(msg.sender == _sends.sender, 'THESE ARE NOT YOUR FUNDS!');
+
   function relay(bytes32 _sendWethMsgHash, Send calldata _send) public {
     CrossDomainMessageLib.requireCrossDomainCallback();
     CrossDomainMessageLib.requireMessageSuccess(_sendWethMsgHash);
@@ -75,6 +129,7 @@ contract CrossChainMultisend {
 
 
   //Withdraw ETH flow
+
 
   function withdraw(uint256 _withdrawFromChainId, Send calldata _send) public {
     require(msg.sender == _send.sender, 'THESE ARE NOT YOUR FUNDS!');
