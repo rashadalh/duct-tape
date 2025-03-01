@@ -2,30 +2,69 @@
 
 > Generated from [superchain-starter](https://github.com/ethereum-optimism/superchain-starter). See the original repository for a more detailed development guide.
 
-Example Superchain app (contract + frontend) that uses interop to send ETH to multiple recipients on a different chain.
+Example Superchain app (contract + frontend) that uses interop to send and withdraw ETH between chains. For hackathon purposes we use it to send ETH between chains and stake it in a yield farm.
 
-<img width="1253" alt="Screenshot 2025-02-18 at 8 17 02 AM" src="https://github.com/user-attachments/assets/841675c2-590e-4632-84a9-43cea2269a34" />
 
 ## 🔗 Contracts
 
-### [CrossChainMultisend.sol](./contracts/src/CrossChainMultisend.sol)
+## Smart Contracts
 
-- Enables sending ETH to multiple recipients on a different chain
-- Uses `L2ToL2CrossDomainMessenger` for cross-chain message passing
-- Leverages `SuperchainWETH` for cross-chain ETH transfers
-- Implements a two-step process:
-  1. Bridges ETH to the destination chain using SuperchainWETH
-  2. Distributes ETH to multiple recipients on the destination chain
-- Includes safety checks for message verification and ETH transfer success
+### CrossChainMultisend.sol
 
-## 📝 Overview
+The main contract that handles cross-chain ETH transfers and interactions with yield farms.
 
-This contract sends two cross-chain messages through the L2ToL2CrossDomainMessenger:
+Key features:
+- Send ETH between chains using the Superchain native bridge
+- Track user balances across different chains
+- Interact with yield farms on destination chains
+- Withdraw ETH and earned yield back to the source chain
 
-1. (Message 1) to send ETH using SuperchainWETH from source to destination chain - triggered by SuperchainWETH#sendETH
-2. (Message 2) to disperse the received ETH to the recipients on the destination chain - triggered by CrossChainMultisend#send
+### SuperSimpleETHYieldFarm.sol (This is the contract we use in the hackathon and is deployed on the devnet 1 chains)
 
-Message 2 depends on the success of Message 1, which is enforced by the `CrossDomainMessageLib.requireMessageSuccess(_sendWethMsgHash)` check in the relay function. This ensures that ETH bridging is completed before distribution occurs.
+A simple yield farm contract that:
+- Accepts ETH deposits
+- Calculates and distributes yield based on a fixed APY
+- Allows users to withdraw their staked ETH plus earned rewards
+- Returns the reward amount when withdrawing
+
+### SuperSimpleYieldFarmWithRewards.sol 
+
+An enhanced version of the yield farm that:
+- Explicitly returns reward amounts from functions
+- Includes proper event emissions
+- Maintains the same core yield calculation logic
+
+### yieldFarm.sol
+
+A contract that fetches and aggregates yield information from farms across different chains:
+- Communicates with yield farms on various chains
+- Stores and updates yield rates
+- Provides a unified interface to query yield information
+- Uses cross-chain messaging to update yield information
+
+## How It Works
+
+1. **Deposit Flow**:
+   - User deposits ETH on Chain A
+   - ETH is bridged to Chain B
+   - On Chain B, the ETH is deposited into a yield farm
+
+2. **Withdrawal Flow**:
+   - User initiates a withdrawal from Chain A
+   - The system withdraws ETH + earned yield from the farm on Chain B
+   - ETH is bridged back to Chain A and returned to the user
+
+3. **Yield Tracking**:
+   - The yieldFetcher contract periodically queries yield rates from farms
+   - Yield information is stored and made available across chains
+   - Users can compare yields before deciding where to stake
+
+## Technical Details
+
+- Uses the Superchain WETH contract for cross-chain ETH transfers
+- Leverages the L2-to-L2 Cross Domain Messenger for cross-chain communication
+- Implements a simple APY-based yield calculation mechanism
+- Tracks user balances across multiple chains
 
 ## 🎯 Patterns
 
