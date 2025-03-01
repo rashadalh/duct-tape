@@ -4,6 +4,13 @@
 
 Example Superchain app (contract + frontend) that uses interop to send and withdraw ETH between chains. For hackathon purposes we use it to send ETH between chains and stake it in a yield farm.
 
+## Demo Video
+
+Check out our demo video to see the project in action: It has a simple UI to deposit ETH and stake it in a yield farm. It also has the deployed address of the contract on the devnet 0 and 1 chain.
+
+[![CrossChainMultisend Demo](https://img.youtube.com/vi/bDDoFHVcO4g/0.jpg)](https://youtu.be/bDDoFHVcO4g)
+
+
 
 ## 🔗 Contracts
 
